@@ -19,25 +19,23 @@ import java.util.List;
 
 @Repository //oznaczamy te klasy ktore odpowiadaj za dostep do bazy danych (mozna tez @Component)
 
-public class PositionRepository implements CustomCrudRepository<Position, Long> {
+//public class PositionRepository implements CustomCrudRepository<Position, Long> {
+
+public class PositionRepository extends AbstractCustomCrudRepository<Position, Long> {
 
     //@Autowired
-    private EntityManager em; // obiekt zarzadzany przez springa
+    //private EntityManager em; // obiekt zarzadzany przez springa
 
 
-    public PositionRepository(EntityManager em) { // wstrzykiwanie zaleznosci
-        this.em = em;
+    //public PositionRepository(EntityManager em) { // wstrzykiwanie zaleznosci
+    //    this.em = em;
+
+
+    public PositionRepository(EntityManager em){
+        super(em,Position.class);
     }
 
 
-    @Override
-    public List<Position> findAll() {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Position> query = criteriaBuilder.createQuery(Position.class);
-        Root<Position> from = query.from(Position.class);
-        return em.createQuery(query.select(from))
-                .getResultList();
-    }
 
 
     public List<String> findAllNames() {
@@ -62,20 +60,9 @@ public class PositionRepository implements CustomCrudRepository<Position, Long> 
     }
 
 
-    @Override
-    public Position findById(Long value) {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Position> query = criteriaBuilder.createQuery(Position.class);
-        Root<Position> from = query.from(Position.class);
 
 
-        return em.createQuery(
-                query.select(from)
-                        .where(criteriaBuilder.equal(from.get("id"), value)))
-                .getSingleResult();
-    }
-
-
+/*
     @Override // wazne roznice pomiedzzy persist() i merge()
     @Transactional// rolbacki etc. Wazne
     public Position create(Position obj) {
@@ -95,6 +82,8 @@ public class PositionRepository implements CustomCrudRepository<Position, Long> 
 
         return em.merge(obj);
     }
+
+ */
 // ta metoda nie dziala z frontu
     // @Override
     //@Transactional
@@ -102,11 +91,4 @@ public class PositionRepository implements CustomCrudRepository<Position, Long> 
     //    em.remove(obj);
     //}
 
-    @Override
-    @Transactional
-    public void deleteById(Long value) {
-        em.createQuery("DELETE FROM Position WHERE id=: id")
-                .setParameter("id", value)
-                .executeUpdate();
-    }
 }

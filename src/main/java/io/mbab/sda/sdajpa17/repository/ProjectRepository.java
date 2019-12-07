@@ -13,33 +13,16 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public class ProjectRepository implements CustomCrudRepository<Project, Long> {
+//public class ProjectRepository implements CustomCrudRepository<Project, Long> {
+public class ProjectRepository extends AbstractCustomCrudRepository<Project, Long> {
 
     private EntityManager em;
 
     public ProjectRepository(EntityManager em) {
-        this.em = em;
+        super(em, Project.class);
     }
 
-    @Override
-    public List<Project> findAll() {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Project> query = criteriaBuilder.createQuery(Project.class);
-        Root<Project> from = query.from(Project.class);
-        return em.createQuery(query.select(from))
-                .getResultList();
-    }
 
-    @Override
-    public Project findById(Long id) {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Project> query = criteriaBuilder.createQuery(Project.class);
-        Root<Project> from = query.from(Project.class);
-
-        return em.createQuery(
-                query.select(from)
-                        .where(criteriaBuilder.equal(from.get("id"), id))).getSingleResult();
-    }
 
     public List<String> findAllNames(){
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -60,25 +43,4 @@ public class ProjectRepository implements CustomCrudRepository<Project, Long> {
                 .getResultList();
     }
 
-    @Override
-    @Transactional
-    public Project create(Project obj) {
-        em.persist(obj);
-        return obj;
-    }
-
-    @Override
-    @Transactional
-    public Project update(Project obj) {
-        return em.merge(obj);
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(Long id) {
-        em.createQuery("DELETE FROM Project WHERE id= :id")
-                .setParameter("id", id)
-                .executeUpdate();
-
-    }
 }
