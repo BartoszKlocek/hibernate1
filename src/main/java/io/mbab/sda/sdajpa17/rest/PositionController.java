@@ -8,23 +8,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/positions")
-class PositionController {
+class PositionController extends AbstractController<Position, Long> {
 
     private PositionRepository positionRepository;
 
     public PositionController(PositionRepository positionRepository) {
+        super(positionRepository);
         this.positionRepository = positionRepository;
     }
 
-    @GetMapping
-    public List<Position> findAll() {
-        return positionRepository.findAll();
-    }
 
-    @GetMapping("/{id}")
-    public Position findById(@PathVariable Long id) {
-        return positionRepository.findById(id);
-    }
 
     @GetMapping("/names")
     public List<String> findAllNames() {
@@ -34,21 +27,6 @@ class PositionController {
     @GetMapping("/search")
     public List<Position> findByName(@RequestParam(required = false) String value) {
         return positionRepository.findByName(value);
-    }
-
-    @PostMapping
-    public Position create(@RequestBody Position obj) {
-        return positionRepository.create(obj);
-    }
-
-    @PutMapping
-    public Position update(@RequestBody Position obj) {
-        return positionRepository.update(obj);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
-        positionRepository.deleteById(id);
     }
 
 }
